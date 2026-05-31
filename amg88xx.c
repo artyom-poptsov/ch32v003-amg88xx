@@ -249,7 +249,7 @@ i2c_err_t amg88xx_interrupt_levels_set(amg88xx_t* this,
     int hysteresis_conv = hysteresis / AMG88XX_PIXEL_TEMP_CONVERSION;
     hysteresis_conv = constrain(hysteresis_conv, -4095, 4095);
     this->ihysl = hysteresis_conv & 0xFF;
-    this->ihysh = hysteresis_conv & 0xFF;
+    this->ihysh = (hysteresis_conv & 0x0F00) >> 8;
     rc = amg88xx_write8(this, AMG88XX_IHYSL, this->ihysl);
     if (rc != I2C_OK) {
         goto end;
