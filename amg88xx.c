@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the GNU
  * General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -31,10 +31,10 @@ const float AMG88XX_THERMISTOR_CONVERSION = 0.0625;
  * @return The converted floating point value.
  */
 float signed_magnitude12_to_float(uint16_t value) {
-    // take first 11 bits as absolute val
-    uint16_t abs_value = (value & 0x7FF);
+        // take first 11 bits as absolute val
+        uint16_t abs_value = (value & 0x7FF);
 
-    return (value & 0x800) ? 0 - (float) abs_value : (float) abs_value;
+        return (value & 0x800) ? 0 - (float) abs_value : (float) abs_value;
 }
 
 /**
@@ -44,8 +44,8 @@ float signed_magnitude12_to_float(uint16_t value) {
  * @return A converted floating point value.
  */
 float int12_to_float(uint16_t value) {
-    int16_t val = (value << 4);
-    return val >> 4;
+        int16_t val = (value << 4);
+        return val >> 4;
 }
 
 /**
@@ -57,7 +57,7 @@ float int12_to_float(uint16_t value) {
  * @return I2C_OK on succes, error code otherwise.
  */
 i2c_err_t amg88xx_write8(amg88xx_t* this, uint8_t reg, uint8_t input_value) {
-  return i2c_write_reg(&(this->device), reg, &input_value, 1);
+        return i2c_write_reg(&(this->device), reg, &input_value, 1);
 }
 
 /**
@@ -68,7 +68,7 @@ i2c_err_t amg88xx_write8(amg88xx_t* this, uint8_t reg, uint8_t input_value) {
  * @return I2C_OK on succes, error code otherwise.
  */
 i2c_err_t amg88xx_read8(amg88xx_t* this, uint8_t reg, uint8_t* output_value) {
-    return i2c_read_reg(&(this->device), reg, output_value, 1);
+        return i2c_read_reg(&(this->device), reg, output_value, 1);
 }
 
 /**
@@ -79,12 +79,13 @@ i2c_err_t amg88xx_read8(amg88xx_t* this, uint8_t reg, uint8_t* output_value) {
  * @param num Number of bytes to read.
  * @return I2C_OK on succes, error code otherwise.
  */
-i2c_err_t amg88xx_read(amg88xx_t* this, uint8_t reg, uint8_t* buf, uint8_t num) {
-    i2c_err_t rc = i2c_write_raw(&(this->device), &reg, 1);
-    if (rc != I2C_OK) {
-        return rc;
-    }
-    return i2c_read_raw(&(this->device), buf, num);
+i2c_err_t amg88xx_read(amg88xx_t* this, uint8_t reg, uint8_t* buf,
+                       uint8_t num) {
+        i2c_err_t rc = i2c_write_raw(&(this->device), &reg, 1);
+        if (rc != I2C_OK) {
+                return rc;
+        }
+        return i2c_read_raw(&(this->device), buf, num);
 }
 
 /**
@@ -95,12 +96,13 @@ i2c_err_t amg88xx_read(amg88xx_t* this, uint8_t reg, uint8_t* buf, uint8_t num) 
  * @param num Number of bytes to write.
  * @return I2C_OK on succes, error code otherwise.
  */
-i2c_err_t amg88xx_write(amg88xx_t* this, uint8_t reg, uint8_t* buf, uint8_t num) {
-    i2c_err_t rc = i2c_write_raw(&(this->device), &reg, 1);
-    if (rc != I2C_OK) {
-        return rc;
-    }
-    return i2c_write_raw(&(this->device), buf, num);
+i2c_err_t amg88xx_write(amg88xx_t* this, uint8_t reg, uint8_t* buf,
+                        uint8_t num) {
+        i2c_err_t rc = i2c_write_raw(&(this->device), &reg, 1);
+        if (rc != I2C_OK) {
+                return rc;
+        }
+        return i2c_write_raw(&(this->device), buf, num);
 }
 
 /**
@@ -110,47 +112,47 @@ i2c_err_t amg88xx_write(amg88xx_t* this, uint8_t reg, uint8_t* buf, uint8_t num)
  * @return An I2C_OK on success, I2C error code otherwise.
  */
 i2c_err_t amg88xx_init(amg88xx_t* this, uint16_t address) {
-    i2c_err_t rc;
+        i2c_err_t rc;
 
-    this->device.addr = address;
-    this->device.clkr = I2C_CLK_400KHZ;
-    this->device.type = I2C_ADDR_7BIT;
-    this->device.addr = 0x69;
-    this->device.regb = 1;
-    this->device.tout = 2000;
+        this->device.addr = address;
+        this->device.clkr = I2C_CLK_400KHZ;
+        this->device.type = I2C_ADDR_7BIT;
+        this->device.addr = 0x69;
+        this->device.regb = 1;
+        this->device.tout = 2000;
 
-    rc = i2c_init(&(this->device));
-    if (rc != I2C_OK) {
-        goto end;
-    }
-    Delay_Ms(100);
+        rc = i2c_init(&(this->device));
+        if (rc != I2C_OK) {
+                goto end;
+        }
+        Delay_Ms(100);
 
-    this->pctl = AMG88XX_MODE_NORMAL;
-    rc = amg88xx_write8(this, AMG88XX_PCTL, this->pctl);
-    if (rc != I2C_OK) {
-        goto end;
-    }
+        this->pctl = AMG88XX_MODE_NORMAL;
+        rc = amg88xx_write8(this, AMG88XX_PCTL, this->pctl);
+        if (rc != I2C_OK) {
+                goto end;
+        }
 
-    this->rst = AMG88XX_INITIAL_RESET;
-    rc = amg88xx_write8(this, AMG88XX_RST, this->rst);
-    if (rc != I2C_OK) {
-        goto end;
-    }
+        this->rst = AMG88XX_INITIAL_RESET;
+        rc = amg88xx_write8(this, AMG88XX_RST, this->rst);
+        if (rc != I2C_OK) {
+                goto end;
+        }
 
-    rc = amg88xx_disable_interrupt(this);
-    if (rc != I2C_OK) {
-        goto end;
-    }
+        rc = amg88xx_disable_interrupt(this);
+        if (rc != I2C_OK) {
+                goto end;
+        }
 
-    this->fps = AMG88XX_FPS_10;
-    rc = amg88xx_write8(this, AMG88XX_FPSC, this->fps);
-    if (rc != I2C_OK) {
-        goto end;
-    }
+        this->fps = AMG88XX_FPS_10;
+        rc = amg88xx_write8(this, AMG88XX_FPSC, this->fps);
+        if (rc != I2C_OK) {
+                goto end;
+        }
 
-    Delay_Ms(100);
+        Delay_Ms(100);
 end:
-    return rc;
+        return rc;
 }
 
 /**
@@ -159,8 +161,8 @@ end:
  * @return An I2C_OK on success, I2C error code otherwise.
  */
 i2c_err_t amg88xx_disable_interrupt(amg88xx_t* this) {
-    this->intc &= 0b10;
-    return amg88xx_write8(this, AMG88XX_INTC, this->intc);
+        this->intc &= 0b10;
+        return amg88xx_write8(this, AMG88XX_INTC, this->intc);
 }
 
 /**
@@ -169,8 +171,8 @@ i2c_err_t amg88xx_disable_interrupt(amg88xx_t* this) {
  * @return An I2C_OK on success, I2C error code otherwise.
  */
 i2c_err_t amg88xx_enable_interrupt(amg88xx_t* this) {
-    this->intc |= 1;
-    return amg88xx_write8(this, AMG88XX_INTC, this->intc);
+        this->intc |= 1;
+        return amg88xx_write8(this, AMG88XX_INTC, this->intc);
 }
 
 /**
@@ -180,14 +182,14 @@ i2c_err_t amg88xx_enable_interrupt(amg88xx_t* this) {
  * @return An I2C_OK on success, I2C error code otherwise.
  */
 i2c_err_t amg88xx_interrupt_mode_set(amg88xx_t* this,
-                                amg88xx_interrupt_mode_t mode) {
-    this->intc = (mode << 1) | (this->intc & 0b1);
-    return amg88xx_write8(this, AMG88XX_INTC, this->intc);
+                                     amg88xx_interrupt_mode_t mode) {
+        this->intc = (mode << 1) | (this->intc & 0b1);
+        return amg88xx_write8(this, AMG88XX_INTC, this->intc);
 }
 
 
 uint8_t amg88xx_interrupt_mode_get(amg88xx_t* this) {
-    return this->intc >> 1;
+        return this->intc >> 1;
 }
 
 /**
@@ -198,8 +200,8 @@ uint8_t amg88xx_interrupt_mode_get(amg88xx_t* this) {
  * @return An I2C_OK on success, I2C error code otherwise.
  */
 uint8_t amg88xx_interrupt_read(amg88xx_t* this, uint8_t* buf, uint8_t size) {
-    uint8_t bytes_to_read = fmin(size, (uint8_t) 8);
-    return amg88xx_read(this, AMG88XX_INT_OFFSET, buf, bytes_to_read);
+        uint8_t bytes_to_read = fmin(size, (uint8_t) 8);
+        return amg88xx_read(this, AMG88XX_INT_OFFSET, buf, bytes_to_read);
 }
 
 /**
@@ -208,8 +210,8 @@ uint8_t amg88xx_interrupt_read(amg88xx_t* this, uint8_t* buf, uint8_t size) {
  * @return An I2C_OK on success, I2C error code otherwise.
  */
 i2c_err_t amg88xx_clear_interrupt(amg88xx_t* this) {
-    this->rst = AMG88XX_FLAG_RESET;
-    return amg88xx_write8(this, AMG88XX_RST, this->rst);
+        this->rst = AMG88XX_FLAG_RESET;
+        return amg88xx_write8(this, AMG88XX_RST, this->rst);
 }
 
 /**
@@ -221,49 +223,49 @@ i2c_err_t amg88xx_clear_interrupt(amg88xx_t* this) {
  * @return An I2C_OK on success, I2C error code otherwise.
  */
 i2c_err_t amg88xx_interrupt_levels_set(amg88xx_t* this,
-                                        float high,
-                                        float low,
-                                        float hysteresis) {
-    i2c_err_t rc;
-    int32_t high_conv = high / AMG88XX_PIXEL_TEMP_CONVERSION;
-    high_conv = constrain(high_conv, -4095, 4095);
-    this->inthl = high_conv & 0xFF;
-    this->inthh = (high_conv & 0x0F00) >> 8;
-    rc = amg88xx_write8(this, AMG88XX_INTHL, this->inthl);
-    if (rc != I2C_OK) {
-        goto end;
-    }
-    rc = amg88xx_write8(this, AMG88XX_INTHH, this->inthh);
-    if (rc != I2C_OK) {
-        goto end;
-    }
-    int32_t low_conv = low / AMG88XX_PIXEL_TEMP_CONVERSION;
-    low_conv = constrain(low_conv, -4095, 4095);
-    this->intll = low_conv & 0xFF;
-    this->intlh = (low_conv & 0x0F00) >> 8;
-    rc = amg88xx_write8(this, AMG88XX_INTLL, this->intll);
-    if (rc != I2C_OK) {
-        goto end;
-    }
-    rc = amg88xx_write8(this, AMG88XX_INTLH, this->intlh);
-    if (rc != I2C_OK) {
-        goto end;
-    }
-    int hysteresis_conv = hysteresis / AMG88XX_PIXEL_TEMP_CONVERSION;
-    hysteresis_conv = constrain(hysteresis_conv, -4095, 4095);
-    this->ihysl = hysteresis_conv & 0xFF;
-    this->ihysh = (hysteresis_conv & 0x0F00) >> 8;
-    rc = amg88xx_write8(this, AMG88XX_IHYSL, this->ihysl);
-    if (rc != I2C_OK) {
-        goto end;
-    }
-    rc = amg88xx_write8(this, AMG88XX_IHYSH, this->ihysh);
-    if (rc != I2C_OK) {
-        goto end;
-    }
+                                       float high,
+                                       float low,
+                                       float hysteresis) {
+        i2c_err_t rc;
+        int32_t high_conv = high / AMG88XX_PIXEL_TEMP_CONVERSION;
+        high_conv = constrain(high_conv, -4095, 4095);
+        this->inthl = high_conv & 0xFF;
+        this->inthh = (high_conv & 0x0F00) >> 8;
+        rc = amg88xx_write8(this, AMG88XX_INTHL, this->inthl);
+        if (rc != I2C_OK) {
+                goto end;
+        }
+        rc = amg88xx_write8(this, AMG88XX_INTHH, this->inthh);
+        if (rc != I2C_OK) {
+                goto end;
+        }
+        int32_t low_conv = low / AMG88XX_PIXEL_TEMP_CONVERSION;
+        low_conv = constrain(low_conv, -4095, 4095);
+        this->intll = low_conv & 0xFF;
+        this->intlh = (low_conv & 0x0F00) >> 8;
+        rc = amg88xx_write8(this, AMG88XX_INTLL, this->intll);
+        if (rc != I2C_OK) {
+                goto end;
+        }
+        rc = amg88xx_write8(this, AMG88XX_INTLH, this->intlh);
+        if (rc != I2C_OK) {
+                goto end;
+        }
+        int hysteresis_conv = hysteresis / AMG88XX_PIXEL_TEMP_CONVERSION;
+        hysteresis_conv = constrain(hysteresis_conv, -4095, 4095);
+        this->ihysl = hysteresis_conv & 0xFF;
+        this->ihysh = (hysteresis_conv & 0x0F00) >> 8;
+        rc = amg88xx_write8(this, AMG88XX_IHYSL, this->ihysl);
+        if (rc != I2C_OK) {
+                goto end;
+        }
+        rc = amg88xx_write8(this, AMG88XX_IHYSH, this->ihysh);
+        if (rc != I2C_OK) {
+                goto end;
+        }
 
 end:
-    return rc;
+        return rc;
 }
 
 /**
@@ -274,12 +276,12 @@ end:
  * @return An I2C_OK on success, I2C error code otherwise.
  */
 i2c_err_t amg88xx_moving_average_mode_set(amg88xx_t* this, uint8_t value) {
-    if (value) {
-        this->ave |= (1 << 5);
-    } else {
-        this->ave &= ~(1 << 5);
-    }
-    return amg88xx_write8(this, AMG88XX_AVE, this->ave);
+        if (value) {
+                this->ave |= (1 << 5);
+        } else {
+                this->ave &= ~(1 << 5);
+        }
+        return amg88xx_write8(this, AMG88XX_AVE, this->ave);
 }
 
 /**
@@ -290,16 +292,17 @@ i2c_err_t amg88xx_moving_average_mode_set(amg88xx_t* this, uint8_t value) {
  * @return An I2C_OK on success, I2C error code otherwise.
  */
 i2c_err_t amg88xx_read_thermistor(amg88xx_t* this, float* output_value) {
-    enum { RAW_SIZE = 2 };
-    uint8_t raw_value[RAW_SIZE];
-    i2c_err_t rc = amg88xx_read(this, AMG88XX_TTHL, raw_value, RAW_SIZE);
-    if (rc != I2C_OK) {
+        enum { RAW_SIZE = 2 };
+        uint8_t raw_value[RAW_SIZE];
+        i2c_err_t rc = amg88xx_read(this, AMG88XX_TTHL, raw_value, RAW_SIZE);
+        if (rc != I2C_OK) {
+                return rc;
+        }
+        uint16_t recast = ((uint16_t)raw_value[1] << 8)
+                | ((uint16_t)raw_value[0]);
+        *output_value = signed_magnitude12_to_float(recast)
+                * AMG88XX_THERMISTOR_CONVERSION;
         return rc;
-    }
-    uint16_t recast = ((uint16_t)raw_value[1] << 8) | ((uint16_t)raw_value[0]);
-    *output_value = signed_magnitude12_to_float(recast)
-                        * AMG88XX_THERMISTOR_CONVERSION;
-    return rc;
 }
 
 /**
@@ -313,10 +316,10 @@ i2c_err_t amg88xx_read_thermistor(amg88xx_t* this, float* output_value) {
 i2c_err_t amg88xx_read_pixels_raw(amg88xx_t* this,
                                   uint8_t* buf,
                                   uint8_t count) {
-    uint8_t bytes_to_read = fmin((uint8_t) (count << 1),
-                                 (uint8_t) (AMG88XX_PIXEL_ARRAY_SIZE << 1));
-    return amg88xx_read(this, AMG88XX_PIXEL_OFFSET,
-                        buf, bytes_to_read);
+        uint8_t bytes_to_read = fmin((uint8_t) (count << 1),
+                                     (uint8_t) (AMG88XX_PIXEL_ARRAY_SIZE << 1));
+        return amg88xx_read(this, AMG88XX_PIXEL_OFFSET,
+                            buf, bytes_to_read);
 }
 
 /**
@@ -326,23 +329,24 @@ i2c_err_t amg88xx_read_pixels_raw(amg88xx_t* this,
  * @param count Number of pixels to read (up to 64.)
  */
 i2c_err_t amg88xx_read_pixels(amg88xx_t* this, float* buf, uint8_t count) {
-    uint8_t bytes_to_read = fmin((uint8_t) (count << 1),
-                                 (uint8_t) (AMG88XX_PIXEL_ARRAY_SIZE << 1));
-    uint8_t raw_values[bytes_to_read];
-    uint8_t pos;
-    uint16_t recast;
-    i2c_err_t rc = amg88xx_read(this, AMG88XX_PIXEL_OFFSET,
-                                raw_values, bytes_to_read);
-    if (rc != I2C_OK) {
+        uint8_t bytes_to_read = fmin((uint8_t) (count << 1),
+                                     (uint8_t) (AMG88XX_PIXEL_ARRAY_SIZE << 1));
+        uint8_t raw_values[bytes_to_read];
+        uint8_t pos;
+        uint16_t recast;
+        i2c_err_t rc = amg88xx_read(this, AMG88XX_PIXEL_OFFSET,
+                                    raw_values, bytes_to_read);
+        if (rc != I2C_OK) {
+                return rc;
+        }
+        for (uint8_t index = 0; index < count; index++) {
+                pos = index << 1;
+                recast = ((uint16_t)raw_values[pos + 1] << 8)
+                        | ((uint16_t)raw_values[pos]);
+                buf[index] = int12_to_float(recast)
+                        * AMG88XX_PIXEL_TEMP_CONVERSION;
+        }
         return rc;
-    }
-    for (uint8_t index = 0; index < count; index++) {
-        pos = index << 1;
-        recast = ((uint16_t)raw_values[pos + 1] << 8)
-                    | ((uint16_t)raw_values[pos]);
-        buf[index] = int12_to_float(recast) * AMG88XX_PIXEL_TEMP_CONVERSION;
-    }
-    return rc;
 }
 
 /* amg88xx.c ends here. */
