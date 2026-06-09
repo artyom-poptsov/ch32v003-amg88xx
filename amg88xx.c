@@ -26,11 +26,6 @@ const float AMG88XX_PIXEL_TEMP_CONVERSION = 0.25;
 const float AMG88XX_THERMISTOR_CONVERSION = 0.0625;
 
 /**
- * A macro taken from the Arduino sources.
- */
-#define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
-
-/**
  * @brief Convert a 12-bit signed magnitude value to a floating point number.
  * @param value The 12-bit signed magnitude value to be converted.
  * @return The converted floating point value.

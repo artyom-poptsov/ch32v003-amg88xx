@@ -23,6 +23,11 @@
 #include <lib_i2c.h>
 
 /**
+ * A macro taken from the Arduino sources.
+ */
+#define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+
+/**
  * AMG88XX register adresses.
  */
 typedef enum {
