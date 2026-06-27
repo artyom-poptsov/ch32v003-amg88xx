@@ -349,4 +349,33 @@ i2c_err_t amg88xx_read_pixels(amg88xx_t* this, float* buf, uint8_t count) {
         return rc;
 }
 
+/**
+ * Read infrared sensor values as integers.
+ *
+ * @param this An AMG88XX device instance.
+ * @param buf A buffer to store the pixel values in.
+ * @param count Number of pixels to read (up to 64.)
+ */
+i2c_err_t amg88xx_read_pixels_int(amg88xx_t* this, int16_t* buf, 
+        uint8_t count)
+{
+        uint8_t bytes_to_read = fmin((int16_t) (count << 1),
+                                     (int16_t) (AMG88XX_PIXEL_ARRAY_SIZE << 1));
+        uint8_t raw_values[bytes_to_read];
+        uint8_t pos;
+        int16_t recast;
+        i2c_err_t rc = amg88xx_read(this, AMG88XX_PIXEL_OFFSET,
+                                    raw_values, bytes_to_read);
+        if (rc != I2C_OK) {
+                return rc;
+        }
+        for (uint8_t index = 0; index < count; index++) {
+                pos = index << 1;
+                recast = ((int16_t)raw_values[pos + 1] << 8)
+                        | ((int16_t)raw_values[pos]);
+                buf[index] = recast * AMG88XX_PIXEL_TEMP_CONVERSION;
+        }
+        return rc;
+}
+
 /* amg88xx.c ends here. */

@@ -175,6 +175,8 @@ i2c_err_t amg88xx_read_pixels_raw(amg88xx_t* this,
                                   uint8_t* buf,
                                   uint8_t count);
 i2c_err_t amg88xx_read_pixels(amg88xx_t* this, float* buf, uint8_t count);
+i2c_err_t amg88xx_read_pixels_int(amg88xx_t* this, int16_t* buf,
+        uint8_t count);
 i2c_err_t amg88xx_interrupt_levels_set(amg88xx_t* this,
                                        float high,
                                        float low,
