@@ -171,6 +171,7 @@ i2c_err_t amg88xx_interrupt_mode_set(amg88xx_t* this,
                                      amg88xx_interrupt_mode_t mode);
 i2c_err_t amg88xx_clear_interrupt(amg88xx_t* this);
 i2c_err_t amg88xx_read_thermistor(amg88xx_t* this, float* output_value);
+i2c_err_t amg88xx_read_thermistor_int(amg88xx_t* this, uint16_t* output_value);
 i2c_err_t amg88xx_read_pixels_raw(amg88xx_t* this,
                                   uint8_t* buf,
                                   uint8_t count);

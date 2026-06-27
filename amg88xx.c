@@ -305,6 +305,19 @@ i2c_err_t amg88xx_read_thermistor(amg88xx_t* this, float* output_value) {
         return rc;
 }
 
+i2c_err_t amg88xx_read_thermistor_int(amg88xx_t* this, uint16_t* output_value) {
+        enum { RAW_SIZE = 2 };
+        uint8_t raw_value[RAW_SIZE];
+        i2c_err_t rc = amg88xx_read(this, AMG88XX_TTHL, raw_value, RAW_SIZE);
+        if (rc != I2C_OK) {
+                return rc;
+        }
+        uint16_t recast = ((uint16_t)raw_value[1] << 8)
+                | ((uint16_t)raw_value[0]);
+        *output_value = recast * AMG88XX_THERMISTOR_CONVERSION;
+        return rc;
+}
+
 /**
  * @brief Read infrared sensor raw values.
  * @param this An AMG88XX device instance.
